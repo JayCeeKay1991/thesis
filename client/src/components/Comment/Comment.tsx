@@ -17,7 +17,7 @@ function Comment({ comment }: propsType) {
         className="w-[80px] h-[80px] overflow-hidden rounded-full mr-[40px] flex items-center justify-center"
       >
         <img
-          src={comment.owner.profilePic}
+          src={comment.owner?.profilePic}
           className="w-full"
           alt="get a profile pic you dummy"
         />
