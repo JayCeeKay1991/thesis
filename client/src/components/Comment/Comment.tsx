@@ -9,7 +9,8 @@ type propsType = {
 };
 
 function Comment({ comment }: propsType) {
-
+  //function
+  
   return (
     <div className="bg-tapeBlack w-[700px] h-[120px] flex flex-row pl-[20px] rounded-[20px] p-[10px] mb-[50px] items-center border-tapeDarkGrey border-[1px]">
       <div
