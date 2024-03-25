@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import UserModel from '../../models/user';
 import bcrypt from 'bcrypt';
+import { CustomRequest } from '../../middlewares/auth';
 
 // get all users
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -211,4 +212,17 @@ export const logout = (req: Request, res: Response) => {
     });
 };
 
-export default { createUser, login, editUser, logout };
+// get user profile, session
+
+export const profile = async (req: CustomRequest, res: Response) => {
+  try {
+    // do i want to send the whole user or just some properties
+    // const { _id, userName, email } = req.user;
+    // const user = { _id, userName, email };
+    res.status(200).send(req.user);
+  } catch {
+    res.status(404).send({ Error, message: 'User not found' });
+  }
+};
+
+export default { createUser, login, editUser, logout, profile };

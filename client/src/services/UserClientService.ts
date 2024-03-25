@@ -18,6 +18,7 @@ export async function login(body: FormValuesUserLogin) {
     return await apiClient<User>('users/login', 'POST', body);
   } catch (error) {
     console.error(error);
+    throw error;
   }
 }
 
@@ -54,6 +55,36 @@ export const logout = async () => {
     });
 
     return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+// export const getProfile = async (id: string) => {
+//   try {
+//     return await apiClient<User>(`users/${id}`);
+//   } catch (error) {
+//     console.error(error);
+//     throw error;
+//   }
+// };
+
+export const getProfile = async (): Promise<User> => {
+  try {
+    const response = await fetch(
+      import.meta.env.VITE_SERVER || 'http://localhost:3001' + '/me',
+
+      {
+        method: 'GET',
+        credentials: 'include',
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.log(error);
     throw error;

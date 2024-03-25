@@ -30,7 +30,8 @@ const AppNav = () => {
   const handleAuth = () => {
     setIsAuthenticated(false);
     setUser(initialStateUser);
-    localStorage.clear();
+    // localStorage.clear();
+
     auth.logout(() => navigate('/home'));
   };
 

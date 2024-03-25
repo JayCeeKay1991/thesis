@@ -4,7 +4,9 @@ import TestPlayer from '../TestPlayer/TestPlayer';
 import ContextProvider, { useMainContext } from '@/components/Context/Context';
 
 const App = () => {
-  const { isAuthenticated } = useMainContext();
+  const { isAuthenticated, user } = useMainContext();
+  console.log(user);
+  console.log(isAuthenticated);
 
   // delete
   // const userId = localStorage.getItem('loggedinUser');
@@ -13,8 +15,9 @@ const App = () => {
     <ContextProvider>
       <div className="App bg-tapeBlack">
         <AppNav />
-        {/* {userId ? <TestPlayer /> : <></>} */}
-        {isAuthenticated ? <TestPlayer /> : <></>}
+        {/* {user._id ? <TestPlayer /> : <></>} */}
+        {/* {isAuthenticated ? <TestPlayer /> : <></>} */}
+        <TestPlayer />
         <Outlet />
       </div>
     </ContextProvider>

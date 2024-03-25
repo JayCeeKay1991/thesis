@@ -11,7 +11,7 @@ import {
 import { User } from '@/types/User';
 import { ChannelType } from '@/types/Channel';
 import { MixTape } from '@/types/Mixtape';
-import { getUserById } from '@/services/UserClientService';
+import { getProfile, getUserById } from '@/services/UserClientService';
 import { useNavigate } from 'react-router-dom';
 
 type MainContext = {
@@ -76,8 +76,6 @@ export default function ContextProvider({ children }: PropsWithChildren) {
     initialStateAuthentication
   ); // Initialize isAuthenticated state
 
-  console.log(isAuthenticated);
-
   useEffect(() => {
     // Check if user is authenticated
     // const initialState = auth.isAuthenticated();
@@ -89,12 +87,18 @@ export default function ContextProvider({ children }: PropsWithChildren) {
 
     const fetchUser = async () => {
       try {
-        const userId = localStorage.getItem('loggedinUser');
+        // const userId = sessionStorage.getItem('loggedinUser');
+        // const user = apiService.profile(); // GET => calls credentials (checking for sessions) hitting authMiddleware, return user for frontend
 
-        if (userId) {
-          const foundUser = await getUserById(userId);
+        const user2 = await getProfile();
+
+        console.log(user2);
+        if (user2) {
+          const foundUser = await getUserById(user2._id);
+
           if (foundUser) {
             setUser(foundUser);
+            console.log(user);
             setChannels(foundUser.channels);
             setMixTapes(foundUser.mixTapes);
           }

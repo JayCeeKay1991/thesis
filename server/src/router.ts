@@ -6,6 +6,7 @@ import {
   getAllUsers,
   getUserById,
   logout,
+  profile,
 } from './controllers/user/user';
 import {
   createChannel,
@@ -31,7 +32,7 @@ router.post('/users', createUser);
 router.put('/users/:id', editUser);
 
 router.get('/channels/:channelId', getChannel);
-router.post('/channels', createChannel);
+router.post('/channels', authMiddleware as RequestHandler, createChannel);
 router.post('/channels/:channelId/:userId', addUserToChannel);
 router.post('/channels/:channelId/', addComment);
 router.delete('/channels/:channelId/', deleteChannel);
@@ -41,8 +42,8 @@ router.get('/dash/:userId', getChannelsByUser);
 router.post('/mixtape', createMixTape);
 
 // user profile check it later if we need
-// router.get('/me', authMiddleware, userController.profile);
-// router.post('/logout', authMiddleware, logout);
+router.get('/me', authMiddleware as RequestHandler, profile);
+
 router.post('/logout', authMiddleware as RequestHandler, logout);
 
 export default router;
