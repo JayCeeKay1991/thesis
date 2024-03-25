@@ -50,6 +50,12 @@ export const createUser = async (req: Request, res: Response) => {
 
     // Save the new user to the database
     const user = await newUser.save();
+
+    // SESSION !!!!
+    if (req.session) {
+      req.session.uid = user._id;
+    }
+
     // send the result
     res.status(201).json(user);
   } catch (error) {
@@ -98,14 +104,19 @@ export const login = async (req: Request, res: Response) => {
         .status(401)
         .json({ error: '401', message: 'Username or password is incorrect' });
     }
+
     // if everything correct, send the user
+    // SESSION !!!!
+    if (req.session) {
+      req.session.uid = user._id;
+    }
+
     res.status(200).json(user);
   } catch (error) {
     // console.error('Error logging in user:', error);
     res.status(500).json('Error logging in user');
   }
 };
-
 
 export const editUser = async (req: Request, res: Response) => {
   try {
@@ -184,4 +195,20 @@ export const getUserById = async (req: Request, res: Response) => {
   }
 };
 
-export default { createUser, login, editUser };
+// SESSION
+export const logout = (req: Request, res: Response) => {
+  req.session &&
+    req.session.destroy((error) => {
+      if (error) {
+        res
+          .status(500)
+          .send({ error, message: 'Could not log out, please try again' });
+      } else {
+        res.clearCookie('sid');
+
+        res.status(200).send({ message: 'Logout successful' });
+      }
+    });
+};
+
+export default { createUser, login, editUser, logout };

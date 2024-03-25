@@ -43,3 +43,19 @@ export const getUserById = async (id: string) => {
     console.error(error);
   }
 };
+
+export const logout = async () => {
+  try {
+    const response = await fetch('http://localhost:3001/' + 'logout', {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

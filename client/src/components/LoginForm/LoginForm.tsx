@@ -3,6 +3,7 @@ import { useMainContext } from '../Context/Context';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../services/UserClientService';
 import './LoginForm.css';
+import auth from '@/utils/auth';
 
 export type FormValuesUserLogin = {
   email: string;
@@ -15,7 +16,7 @@ const initialStateUserLogin = {
 };
 
 function LoginForm() {
-  const { setUser } = useMainContext();
+  const { setUser, setIsAuthenticated } = useMainContext();
   const navigate = useNavigate();
 
   const [failedToLogin, setFailedToLogin] = useState(false);
@@ -36,22 +37,26 @@ function LoginForm() {
     // make service call login function
     const loggedinUser = await login(loginData);
 
-    
     // empty the form
     setFormValuesUserLogin(initialStateUserLogin);
-    
-    // set user to the logged in user
-   if (loggedinUser) {
-     setUser(loggedinUser);
-     // set the localstorage to the logged in user id
-     localStorage.setItem('loggedinUser', loggedinUser._id);
-  
-     // SET navigation to Dashboard
-     navigate('/dash');
-   } else {
-     setFailedToLogin(true);
-   }
 
+    // set user to the logged in user
+    if (loggedinUser) {
+      setUser(loggedinUser);
+
+      // Call setIsAuthenticated with true to update authentication state
+      setIsAuthenticated(true);
+
+      // Optionally, store user information in local storage
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('loggedinUser', loggedinUser._id);
+
+      // SET navigation to Dashboard
+      auth.login(() => navigate('/dash'));
+      // navigate('/dash');
+    } else {
+      setFailedToLogin(true);
+    }
   };
 
   return (
@@ -71,11 +76,13 @@ function LoginForm() {
           className="h-[90px] p-[30px]  border-tapeDarkGrey bg-tapeBlack border-[2px] text-[25px] text-tapeWhite font-medium outline-none"
           data-testid="input-email"
         ></input>
-          <div className='w-full h-[50px] flex flex-row justify-center items-center'>
-          {failedToLogin ? 
-            <p className=" text-[20px] text-tapeDarkGrey">Incorrect email or password</p>
-            : null}
-            </div>
+        <div className="w-full h-[50px] flex flex-row justify-center items-center">
+          {failedToLogin ? (
+            <p className=" text-[20px] text-tapeDarkGrey">
+              Incorrect email or password
+            </p>
+          ) : null}
+        </div>
         <input
           name="password"
           type="password"

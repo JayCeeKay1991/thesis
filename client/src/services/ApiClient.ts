@@ -10,6 +10,7 @@ export async function apiClient<T>(
     headers: {
       'Content-type': 'application/json',
     },
+    credentials: 'include',
     body: body ? JSON.stringify(body) : undefined,
   };
 
