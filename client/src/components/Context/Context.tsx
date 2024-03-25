@@ -90,15 +90,14 @@ export default function ContextProvider({ children }: PropsWithChildren) {
         // const userId = sessionStorage.getItem('loggedinUser');
         // const user = apiService.profile(); // GET => calls credentials (checking for sessions) hitting authMiddleware, return user for frontend
 
-        const user2 = await getProfile();
+        const profile = await getProfile();
 
-        console.log(user2);
-        if (user2) {
-          const foundUser = await getUserById(user2._id);
+        if (profile) {
+          const foundUser = await getUserById(profile._id);
 
           if (foundUser) {
             setUser(foundUser);
-            console.log(user);
+
             setChannels(foundUser.channels);
             setMixTapes(foundUser.mixTapes);
           }

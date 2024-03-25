@@ -48,8 +48,8 @@ function LoginForm() {
       setIsAuthenticated(true);
 
       // Optionally, store user information in local storage
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('loggedinUser', loggedinUser._id);
+      // localStorage.setItem('isAuthenticated', 'true');
+      // localStorage.setItem('loggedinUser', loggedinUser._id);
 
       // SET navigation to Dashboard
       auth.login(() => navigate('/dash'));
