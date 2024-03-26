@@ -17,7 +17,9 @@ const AppNav = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      currentStream[streamIndex].stop()
+      if (currentStream[streamIndex]) {
+        currentStream[streamIndex].stop()
+      }
       setCurrentStream([]);
       setUser(initialStateUser);
       navigate('/home');
