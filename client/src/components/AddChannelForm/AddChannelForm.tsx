@@ -4,16 +4,14 @@ import { useMainContext } from '../Context/Context';
 import { createChannel } from '@/services/ChannelClientService';
 import { postImageToCloudinary } from '@/services/CloudinaryService';
 import { useDropzone } from 'react-dropzone';
-import { PiUploadSimple } from "react-icons/pi";
+import { PiUploadSimple } from 'react-icons/pi';
 
 type FormValues = Omit<ChannelType, '_id'>;
 type propsType = {
   setShowForm: Dispatch<SetStateAction<boolean>>;
 };
 
-export default function AddChannelForm({
-  setShowForm,
-}: propsType) {
+export default function AddChannelForm({ setShowForm }: propsType) {
   const { user, setUser } = useMainContext();
 
   const initialState = {
@@ -22,7 +20,7 @@ export default function AddChannelForm({
     owner: user,
     members: [],
     mixTapes: [],
-    comments: []
+    comments: [],
   };
 
   const [formValues, setFormValues] = useState<FormValues>(initialState);
@@ -40,15 +38,15 @@ export default function AddChannelForm({
     // sets up the dropzone, to accept only one file of specified types
     maxFiles: 1,
     accept: {
-      'image/*': ['.jpg', '.jpeg', '.png', '.webp']
+      'image/*': ['.jpg', '.jpeg', '.png', '.webp'],
     },
-    onDrop: async (acceptedFiles:File[]) => {
+    onDrop: async (acceptedFiles: File[]) => {
       if (acceptedFiles.length) {
         console.log(`File "${acceptedFiles[0].name}" dropped.`);
         try {
           setPictureFile(acceptedFiles[0]);
         } catch (error) {
-          console.error("Error setting image:", error);
+          console.error('Error setting image:', error);
         }
       }
     },
@@ -60,7 +58,7 @@ export default function AddChannelForm({
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
-  }
+  };
 
   // handle create channel click
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -80,12 +78,16 @@ export default function AddChannelForm({
 
     const newChannelData: Omit<ChannelType, '_id'> = {
       ...formValues,
+      members: [user],
       picture: pictureUrl,
     };
 
     try {
       const newChannel = await createChannel(newChannelData);
-      setUser(prev =>( {...prev, channels: [...prev.channels, newChannel]}))
+      setUser((prev) => ({
+        ...prev,
+        channels: [...prev.channels, newChannel],
+      }));
       setFormValues(initialState);
       setShowForm(false);
       setPictureFile(null);
@@ -122,7 +124,7 @@ export default function AddChannelForm({
           onClick={handleChooseFilesClick}
           disabled={!!pictureFile}
         >
-          {pictureFile ? "File chosen" : "Choose file"}
+          {pictureFile ? 'File chosen' : 'Choose file'}
         </button>
         <button
           onClick={handleSubmit}
