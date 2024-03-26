@@ -9,7 +9,7 @@ import { usePlayerContext } from '../Context/PlayerContext';
 
 const AppNav = () => {
   const { user, setUser } = useMainContext();
-  const {setCurrentStream} = usePlayerContext();
+  const {setCurrentStream, currentStream, streamIndex} = usePlayerContext();
   const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const navigate = useNavigate();
@@ -17,8 +17,9 @@ const AppNav = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      setUser(initialStateUser);
+      currentStream[streamIndex].stop()
       setCurrentStream([]);
+      setUser(initialStateUser);
       navigate('/home');
     } catch (error) {
       console.log(error);
