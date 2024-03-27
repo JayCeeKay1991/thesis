@@ -80,7 +80,6 @@ export async function postMusicToCloudinary(
 
     if (end < file.size) onProgress();
     else onComplete(data);
-    // else onComplete({ url: data.secure_url, public_id: data.public_id });
   } catch (error) {
     if (error instanceof Error) {
       onError(error);
