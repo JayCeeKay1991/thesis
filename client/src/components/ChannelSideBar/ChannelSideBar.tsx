@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from 'react';
 // types
 import { ChannelType } from '@/types/Channel';
 // services
 import { getChannel, deleteChannel } from '@/services/ChannelClientService';
+import {
+  deleteImageFromCoudinary,
+  deleteMixesFromCloudinary,
+} from '@/services/CloudinaryService';
 // components
 import { useMainContext } from '@/components/Context/Context';
 import AddMembersSelect from '@/components/AddMembersSelect/AddMembersSelect';
@@ -12,10 +16,11 @@ import CommentList from '@/components/CommentList/CommentList';
 // styling
 import AudioWave from '@/components/AudioWave/AudioWave';
 import { GoPlus } from 'react-icons/go';
-import { RxCross2 } from "react-icons/rx";
+import { RxCross2 } from 'react-icons/rx';
 
 // utils
 import ConfirmationDialog from '@/utils/ConfirmationDialog';
+import { sortByMixtapes } from '@/utils/sortingUtils';
 
 type ChannelItemProps = {
   selectedChannel: ChannelType | null;
@@ -23,10 +28,14 @@ type ChannelItemProps = {
   setShowChannel: Dispatch<SetStateAction<boolean>>;
 };
 
-const ChannelSideBar = ({ selectedChannel, showChannel, setShowChannel }:ChannelItemProps) => {
+const ChannelSideBar = ({
+  selectedChannel,
+  showChannel,
+  setShowChannel,
+}: ChannelItemProps) => {
   const { user, setUser } = useMainContext();
   if (selectedChannel === null) {
-    return
+    return;
   }
   const [channel, setChannel] = useState<ChannelType>(selectedChannel);
   const [showMemberForm, setShowMemberForm] = useState(false);
@@ -34,12 +43,12 @@ const ChannelSideBar = ({ selectedChannel, showChannel, setShowChannel }:Channel
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
-    setChannel(selectedChannel)
-  },[selectedChannel])
+    setChannel(selectedChannel);
+  }, [selectedChannel]);
 
   const closeSideBar = () => {
-      setShowChannel(false)
-  }
+    setShowChannel(false);
+  };
 
   // Toggle members form
   const toggleMemberForm = () => {
@@ -51,13 +60,23 @@ const ChannelSideBar = ({ selectedChannel, showChannel, setShowChannel }:Channel
     setIsCommentsOpen(!isCommentsOpen);
   };
 
-  // Asks for a confirmation, shows delete button only on your channel
   const handleDelete = () => {
     setShowConfirmation(true);
   };
 
-  //Deleting after confirmation
   const handleConfirmDelete = async () => {
+    // if there is a channel picture, delete the pic from cloudinary
+    if (channel.picture) {
+      await deleteImageFromCoudinary(channel.picture);
+    }
+
+    // if there is a mixtape in the channel, delete the mixtapes from cloudinary
+    if (channel.mixTapes.length) {
+      for (const mixTape of channel.mixTapes) {
+        await deleteMixesFromCloudinary(mixTape.url);
+      }
+    }
+
     await deleteChannel(channel._id);
 
     // update the dashboard
@@ -77,8 +96,10 @@ const ChannelSideBar = ({ selectedChannel, showChannel, setShowChannel }:Channel
         id="channel-element"
         className="text-tapeWhite w-[300px] h-[300px] flex-none rounded-[20px] bg-gradient-to-r from-tapePink to-tapeYellow mb-[20px] relative overflow-hidden"
       >
-        <div className='absolute right-[10px] top-[10px]'>
-         <button className='border-none' onClick={closeSideBar}><RxCross2 size={30} /></button>
+        <div className="absolute right-[10px] top-[10px]">
+          <button className="border-none" onClick={closeSideBar}>
+            <RxCross2 size={30} />
+          </button>
         </div>
         <div className="flex flex-row ml-[50px] mt-[50px] absolute bottom-[15px]">
           {channel?.members.map((member, index) => {
@@ -121,16 +142,16 @@ const ChannelSideBar = ({ selectedChannel, showChannel, setShowChannel }:Channel
           <p className="mr-[10px]  pr-[15px] pl-[15px] pt-[4px] pb-[4px] font-semibold border-[1px] rounded-full border-tapeDarkGrey text-tapeDarkGrey">
             {channel?.mixTapes.length
               ? `${channel?.mixTapes.length} mixtape${
-                  channel?.mixTapes.length === 1 ? "" : "s"
+                  channel?.mixTapes.length === 1 ? '' : 's'
                 }`
-              : "0 mixtapes"}
+              : '0 mixtapes'}
           </p>
           <p className="pr-[15px] pl-[15px] pt-[4px] pb-[4px] font-semibold border-[1px] rounded-full border-tapeDarkGrey text-tapeDarkGrey">
             {channel?.members.length
               ? `${channel?.members.length} member${
-                  channel?.members.length === 1 ? "" : "s"
+                  channel?.members.length === 1 ? '' : 's'
                 }`
-              : "0 members"}
+              : '0 members'}
           </p>
         </div>
       </div>

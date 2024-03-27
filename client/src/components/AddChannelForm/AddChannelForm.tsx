@@ -78,7 +78,6 @@ export default function AddChannelForm({ setShowForm }: propsType) {
 
     const newChannelData: Omit<ChannelType, '_id'> = {
       ...formValues,
-      members: [user],
       picture: pictureUrl,
     };
 

@@ -15,17 +15,19 @@ import {
   addComment,
   deleteChannel,
   getChannelsByUser,
-} from "./controllers/channel/channel";
+} from './controllers/channel/channel';
 
 import authMiddleware from './middlewares/auth';
 
-
-import { createMixTape } from "./controllers/mixTape/mixTape";
+import { createMixTape } from './controllers/mixTape/mixTape';
 import {
   createNotification,
   updateNotification,
-} from "./controllers/notification/notification";
-
+} from './controllers/notification/notification';
+import {
+  deleteImageFromCloudinary,
+  deleteMixesFromCloudinary,
+} from './controllers/cloudinary/cloudinary';
 
 const router = express.Router();
 
@@ -51,7 +53,10 @@ router.get('/me', authMiddleware, profile);
 
 router.post('/logout', authMiddleware, logout);
 
-router.post("/notifications", createNotification);
-router.put("/notifications/:userId", updateNotification);
+router.post('/notifications', createNotification);
+router.put('/notifications/:userId', updateNotification);
+
+router.post('/deleteImage', deleteImageFromCloudinary);
+router.post('/deleteMixes', deleteMixesFromCloudinary);
 
 export default router;
