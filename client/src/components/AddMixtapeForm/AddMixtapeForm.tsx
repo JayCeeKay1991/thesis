@@ -142,15 +142,22 @@ const AddMixtapeForm = ({ channelId, channel, setChannel, }: AddMixtapeFormProps
     <form
       className=" text-tapeWhite flex flex-col w-full gap-5 border-dashed border-tapeDarkGrey bg-tapeBlack border-[2px] rounded-[20px] h-[300px] p-[20px]"
     >
-      <div {...getRootProps()} className='flex flex-col items-center' >
+      <div {...getRootProps()} className='flex flex-col items-center'>
         <div>
           <div>
-            <PiUploadSimple size={120} className='text-tapeDarkGrey m-5' />
+            {uploading ? (
+              <Loading />
+            ) : (
+              <PiUploadSimple size={120} className='text-tapeDarkGrey m-5' />
+            )}
           </div>
         </div>
-        {uploading? <Loading/> : <></>}
-        <p>Or</p>
-        <button type='button' className='rounded-full border-[2px] border-tapeDarkGrey w-[150px] p-[5px] m-8' onClick={handleChooseFilesClick} disabled={uploading}>Choose files</button>
+        {!uploading ? (
+          <>
+          <p>Or</p>
+          <button type='button' className='rounded-full border-[2px] border-tapeDarkGrey w-[150px] p-[5px] m-8' onClick={handleChooseFilesClick} disabled={uploading}>Choose files</button>
+          </>
+        ) : <></> }
       </div>
       <input name="file" type="file" onChange={handleFileSelect} className='hidden' ref={fileInputRef} disabled={uploading} accept=".aac, .mp3, .mpga, .m4a, .ogg, .oga, .wav, .weba, .flac"></input>
     </form>
