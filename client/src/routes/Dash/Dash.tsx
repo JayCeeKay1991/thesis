@@ -1,19 +1,22 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import { useMainContext } from "@/components/Context/Context";
+// types
+import { ChannelType } from "@/types/Channel";
+import { NotificationType } from "@/types/Notification";
+// components
 import AddChannelForm from "@/components/AddChannelForm/AddChannelForm";
 import ChannelItem from "@/components/ChannelItem/ChannelItem";
-import { getChannelsUserMemberOf } from "@/services/ChannelClientService";
-import { ChannelType } from "@/types/Channel";
 import AppNav from "@/components/AppNav/AppNav";
-import { IoSearch } from "react-icons/io5";
 import ChannelSideBar from "@/components/ChannelSideBar/ChannelSideBar";
-import { sortByMembers, sortByMixtapes } from "@/utils/sortingUtils";
-import Player from "@/components/Player/Player";
-import { IoAddSharp } from "react-icons/io5";
 import Notifications from '@/components/Notification/NotificationItem';
 import NotificationsCarousel from "@/components/NotificationsCarousel/NotificationsCarousel";
-import { NotificationType } from "@/types/Notification";
-
+import Player from "@/components/Player/Player";
+// utils
+import { getChannelsByUser } from "@/services/ChannelClientService";
+import { sortByMembers, sortByMixtapes } from "@/utils/sortingUtils";
+// styling
+import { IoAddSharp } from "react-icons/io5";
+import { IoSearch } from "react-icons/io5";
 
 export default function Dash() {
   const { user } = useMainContext();
@@ -35,7 +38,7 @@ export default function Dash() {
 
   useEffect(() => {
     async function getAllChannels() {
-      const allChannels = await getChannelsUserMemberOf(user._id);
+      const allChannels = await getChannelsByUser(user._id);
       const userNotifications = allChannels.flatMap((channel) => channel.notifications).filter((not) => not.unNotifiedUsers.includes(user._id));
       setChannels(allChannels);
       setNotifications(userNotifications);
@@ -90,9 +93,7 @@ export default function Dash() {
       setChannels(filteredChannels);
       setUserChannels(filteredUserChannels);
     }
-
   }
-
 
   return (
     <div
@@ -134,7 +135,6 @@ export default function Dash() {
               <></>
             )}
           </div>
-
           <div
             id="channel-list-wrap"
             className="text-tapeWhite flex-col w-full h-full"
@@ -241,7 +241,6 @@ export default function Dash() {
           setShowChannel={setShowChannel}
         />
       )}
-
       <Player />
     </div>
   );

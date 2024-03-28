@@ -2,14 +2,12 @@ import { apiClient } from "./ApiClient";
 import { ChannelType } from "@/types/Channel";
 import { CommentsType } from "../types/Comments";
 
+
+// GET REQUESTS
+
 // Get channel by id GET
 export const getChannel = async (channelId: string) => {
   return await apiClient<ChannelType>(`channels/${channelId}`);
-};
-
-// get all channels that the user related to
-export const getChannelsUserMemberOf = async (userId: string) => {
-  return await apiClient<ChannelType[]>(`dash/${userId}`);
 };
 
 // Get channels for the logged in user GET
@@ -17,13 +15,9 @@ export const getChannelsByUser = async (userId: string) => {
   return await apiClient<ChannelType[]>(`channels/${userId}`);
 };
 
+// POST REQUESTS
 export const createChannel = async (body: Omit<ChannelType, "_id">) => {
   return await apiClient<ChannelType>("channels", "POST", body);
-};
-
-// Edit channel
-export const editChannel = async (channelId: string, body: ChannelType) => {
-  return await apiClient<ChannelType>(`channels/${channelId}`, "PUT", body);
 };
 
 // Add user to channel
@@ -37,6 +31,14 @@ export const addUserToChannel = async (channelId: string, userId: string) => {
 // Add message to channel
 export const addComment = async (channelId: string, body: CommentsType) => {
   return await apiClient<ChannelType>(`channels/${channelId}`, 'POST', body);
+};
+
+
+// PUT REQUESTS
+
+// Edit channel
+export const editChannel = async (channelId: string, body: ChannelType) => {
+  return await apiClient<ChannelType>(`channels/${channelId}`, "PUT", body);
 };
 
 // Delete channel

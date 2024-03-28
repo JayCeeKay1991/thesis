@@ -18,8 +18,6 @@ import AudioWave from '@/components/AudioWave/AudioWave';
 import { GoPlus } from 'react-icons/go';
 import { RxCross2 } from 'react-icons/rx';
 import { RiDeleteBin5Line } from "react-icons/ri";
-
-
 // utils
 import ConfirmationDialog from '@/utils/ConfirmationDialog';
 
@@ -54,7 +52,6 @@ const ChannelSideBar = ({
   const toggleMemberForm = () => {
     setShowMemberForm(!showMemberForm);
   };
-
 
   // Asks for a confirmation, shows delete button only on your channel
   const handleDelete = () => {

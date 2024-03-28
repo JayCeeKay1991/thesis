@@ -32,7 +32,7 @@ export const getChannelsByUser = async (req: Request, res: Response) => {
       })
     res.status(200).json(channelsWithUser);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).json(`error getting users channels ${error}`);
   }
 };
 
