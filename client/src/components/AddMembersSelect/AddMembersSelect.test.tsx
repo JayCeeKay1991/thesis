@@ -9,7 +9,7 @@ import { ChannelType } from '@/types/Channel';
 
 describe('AddMembersSelect Component', () => {
     let inputElement: HTMLInputElement;
-    let setChannelList = vi.fn()
+    let setChannelList:Dispatch<SetStateAction<ChannelType>> = vi.fn()
     let toggleMemberForm = vi.fn()
 
     beforeEach(() => {

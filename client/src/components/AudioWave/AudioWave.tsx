@@ -1,12 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
-import { useMainContext } from '../Context/Context';
+import { usePlayerContext } from '../Context/PlayerContext';
 import WaveSurfer from 'wavesurfer.js';
+import { useRef, useEffect, useState } from 'react';
 
 
 // A React component that will render wavesurfer
 const AudioWave = () => {
-  const { currentStreamUrls, streamIndex, currentPlaybackTime } = useMainContext();
-  const waveContainerRef = useRef<HTMLDivElement | null>(null);
+  const { currentStream, streamIndex, playbackPosition } = usePlayerContext()
+  const waveContainerRef = useRef<HTMLDivElement>(null);
   const [wavesurfer, setWavesurfer] = useState<WaveSurfer | null>(null);
 
   useEffect(() => {
@@ -14,6 +14,7 @@ const AudioWave = () => {
       const ws = WaveSurfer.create({
         container: waveContainerRef.current,
         height: 90,
+        width: 600,
         waveColor: 'white',
         progressColor: '#909090',
         barGap: 1,
@@ -24,32 +25,30 @@ const AudioWave = () => {
     return () => {
       wavesurfer?.destroy();
     };
-  }, [waveContainerRef, wavesurfer]);
+  }, [waveContainerRef, wavesurfer, currentStream]);
 
   useEffect(() => {
-    if (wavesurfer && currentStreamUrls[streamIndex]) {
-      wavesurfer.load(currentStreamUrls[streamIndex]);
+    if (wavesurfer && currentStream[streamIndex]) {
+      const url = (currentStream[streamIndex] as any)._src
+      wavesurfer.load(url);
     }
-  }, [wavesurfer, currentStreamUrls, streamIndex]);
+  }, [wavesurfer, currentStream, streamIndex]);
 
 
   useEffect(() => {
-    if (wavesurfer && typeof currentPlaybackTime === 'number') {
+    if (wavesurfer && typeof playbackPosition === 'number') {
       const duration = wavesurfer.getDuration();
       if (duration > 0) {
-        const seekTo = currentPlaybackTime / duration;
+        const seekTo = playbackPosition / duration;
         wavesurfer.seekTo(seekTo);
       }
     }
-  }, [currentPlaybackTime, wavesurfer]);
+  }, [wavesurfer, playbackPosition]);
 
   return (
-    <div id="wave" className="h-[100px] absolute ml-[50px] bottom-[40px] left-[300px] border-tapeWhite border-[2px] rounded-full" style={{pointerEvents: 'none'}}>
-      <div
-      className='w-[600px]'
-      ref={waveContainerRef}>
-      </div>
-    </div>
+    <div id="wave" ref={waveContainerRef} className="h-[100px] w-[700px] absolute ml-[50px] bottom-[40px] left-[300px] border-tapeWhite border-[2px] rounded-full flex justify-center" style={{ pointerEvents: 'none' }} />
+
+
   )
 }
 

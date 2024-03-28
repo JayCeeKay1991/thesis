@@ -1,0 +1,39 @@
+input[type='range'] {
+    --range-progress: 0;
+  }
+  
+  input[type='range']::before {
+    width: var(--range-progress);
+  }
+  
+  /* Styles for the seek slider */
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%; /* Take up full width */
+    outline: none;
+    background-color: black;
+    /* border radius doesnt work at the moment, fix it later */
+    border-radius: 30px;
+  }
+  
+  /* Define gradient for the seek slider track */
+  input[type='range']::-webkit-slider-runnable-track {
+    background: linear-gradient(
+      to right,
+      white 0%,
+      white var(--range-value, 0%),
+      #808080 var(--range-value, 0%),
+      #808080 100%
+    );
+  }
+  
+  /* Define styling for the thumb (handle) of the seek slider */
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 5px;
+    height: 5px;
+    background-color: white; /* Make the thumb white */
+    border-radius: 50%;
+  }

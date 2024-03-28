@@ -1,6 +1,5 @@
 import { Document, Types } from "mongoose";
 import mongoose from ".";
-import NotificationModel from "./notifications";
 import { ChannelType } from "./channel";
 import ChannelModel from "./channel";
 type MixTapeDocument = Document<unknown, {}, MixTapeType> & MixTapeType;
@@ -40,19 +39,6 @@ async function updateChannelAndUser(doc: MixTapeDocument) {
   await mongoose
     .model("Channel")
     .updateOne({ _id: doc.channel }, { $push: { mixTapes: doc._id } });
-
-  // Create a notification for the new mixtape
-  const newNotification = await NotificationModel.create({
-    message: `A new mixtape "${doc.name}" was added.`,
-    channelName: channelDoc.name,
-    unNotifiiedUsers: channelDoc.members,
-    date: new Date(),
-  });
-  const updatedChannel = await ChannelModel.findByIdAndUpdate(
-    channelDoc._id,
-    { $push: { notifications: newNotification._id } },
-    { new: true }
-  ).populate("notifications");
 }
 
 MixTape.post("save", updateChannelAndUser);

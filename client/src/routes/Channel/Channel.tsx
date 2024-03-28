@@ -7,6 +7,7 @@ import { ChannelType } from '@/types/Channel';
 import { getChannel, deleteChannel } from '@/services/ChannelClientService';
 // components
 import { useMainContext } from '@/components/Context/Context';
+import { usePlayerContext } from '@/components/Context/PlayerContext';
 import AddMembersSelect from '@/components/AddMembersSelect/AddMembersSelect';
 import AddMixtapeForm from '@/components/AddMixtapeForm/AddMixtapeForm';
 import CommentList from '@/components/CommentList/CommentList';
@@ -15,17 +16,24 @@ import { MdPlayArrow } from 'react-icons/md';
 import AudioWave from '@/components/AudioWave/AudioWave';
 import { GoPlus } from 'react-icons/go';
 // utils
-import { extractStreamUrls } from '@/utils/extractStreamUrls';
+import { generateStream } from '@/utils/streamCreationHelpers';
 import ConfirmationDialog from '@/utils/ConfirmationDialog';
 
 const Channel = () => {
-  const { user, setCurrentStreamUrls, setUser } = useMainContext();
+  const { user, setUser } = useMainContext();
+  const {
+    setCurrentStream,
+    currentStream,
+    streamIndex,
+    setStreamIndex,
+    setPlaying } = usePlayerContext()
   const location = useLocation();
   const [channel, setChannel] = useState<ChannelType>(location.state.channel);
   const [showMemberForm, setShowMemberForm] = useState(false);
   const [isCommentsOpen, setIsCommentsOpen] = useState(true);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isThereMix, setIsThereMix] = useState(false)
+  const [isPlayClicked, setIsPlayClicked] = useState(false);
   const navigateTo = useNavigate();
 
   useEffect(() => {
@@ -44,15 +52,28 @@ const Channel = () => {
     if (channel.mixTapes.length > 0) {
       setIsThereMix(!isThereMix)
     }
-  },[channel.mixTapes])
+  }, [channel.mixTapes])
 
-  // Play stream
-  const handlePlayClick = () => {
-    console.log('play clicked');
-    const channelUrls = extractStreamUrls(channel.mixTapes);
-    setCurrentStreamUrls(channelUrls);
-    console.log(channelUrls);
+  const handlePlayClick = async () => {
+    if (isPlayClicked) {
+      return;
+    }
+    setIsPlayClicked(true);
+    if (currentStream[streamIndex]) {
+      currentStream[streamIndex].stop();
+      setPlaying(false);
+    }
+    try {
+      const stream = await generateStream(channel, setStreamIndex, streamIndex);
+      console.log('new stream ready', stream)
+      setCurrentStream(stream);
+    } catch (error) {
+      console.error('Error occurred while loading stream:', error);
+    } finally {
+      setIsPlayClicked(false);
+    }
   };
+
 
   // Toggle members form
   const toggleMemberForm = () => {
@@ -73,7 +94,7 @@ const Channel = () => {
   const handleConfirmDelete = async () => {
     await deleteChannel(channel._id);
 
-  // update the dashboard
+    // update the dashboard
     setUser((prevList) => ({
       ...prevList,
       channels: prevList.channels.filter((el) => el._id !== channel._id),
@@ -102,16 +123,14 @@ const Channel = () => {
               <div className="flex flex-row">
                 <p className="mr-[20px] font-medium">
                   {channel.mixTapes.length
-                    ? `${channel.mixTapes.length} mixtape${
-                        channel.mixTapes.length === 1 ? "" : "s"
-                      }`
+                    ? `${channel.mixTapes.length} mixtape${channel.mixTapes.length === 1 ? "" : "s"
+                    }`
                     : "0 mixtapes"}
                 </p>
                 <p className="font-medium">
                   {channel.members.length
-                    ? `${channel.members.length} member${
-                        channel.members.length === 1 ? "" : "s"
-                      }`
+                    ? `${channel.members.length} member${channel.members.length === 1 ? "" : "s"
+                    }`
                     : "0 members"}
                 </p>
               </div>

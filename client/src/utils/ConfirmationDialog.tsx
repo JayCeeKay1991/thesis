@@ -12,7 +12,7 @@ export default function ConfirmationDialog({
   return (
     <div>
       <div
-        className="flex flex-column rounded-2xl border-tapeWhite border-[2px] "
+        className="w-[300px] flex flex-column rounded-[20px] border-tapeWhite bg-tapeBlack border-[1px] absolute right-[30px] z-40"
         id={`confirmation-dialog ${isOpen ? 'open' : ''}`}
       >
         <div id="confirmation-dialog-content" className="m-3">

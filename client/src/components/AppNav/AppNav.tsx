@@ -1,53 +1,40 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMainContext, initialStateUser } from '@/components/Context/Context';
 import { MdHome } from 'react-icons/md';
 import { FiLogOut } from 'react-icons/fi';
-import { useState } from 'react';
-import { IoSearch } from "react-icons/io5";
+import { logout } from '@/services/UserClientService';
+import { usePlayerContext } from '../Context/PlayerContext';
 
 const AppNav = () => {
   const { user, setUser } = useMainContext();
-  const [isSearchVisible, setIsSearchVisible] = useState(false)
+  const {setCurrentStream, currentStream, streamIndex} = usePlayerContext();
+
+
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
-    setUser(initialStateUser);
-    localStorage.clear();
-    window.location.href = '/home';
+    try {
+      await logout();
+      setUser(initialStateUser);
+      if (currentStream[streamIndex]) {
+        currentStream[streamIndex].stop()
+      }
+      setCurrentStream([]);
+      navigate('/home');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const toggleSearch = () => {
-    setIsSearchVisible(!isSearchVisible);
-  }
 
   return (
-
-    <nav className="w-full h-20 bg-tapeBlack fixed top-0 left-0 flex flex-row items-center justify-between pr-[20px] pl-[20px]">
-      <div className="flex flex-row align-middle">
-        <Link to={`/dash`}>
-          <button className=" text-tapeWhite border-none mr-[20px]">
-            <MdHome size={30} />
-          </button>
-        </Link>
-        <div id="searchWrap">
-          <button className="border-none mt-[2px]" onClick={toggleSearch}>
-            <IoSearch size={25} className='border-none'/>
-          </button>
-          {isSearchVisible && (
-            <input
-              className="bg-tapeBlack text-tapeWhite mx-8 focus:outline none"
-              type="text"
-              placeholder="Search..."
-            />
-          )}
-        </div>
-      </div>
-      <div className=" w-[100px] pl-[20px] flex flex-row  bg-tapeWhite rounded-full items-center justify-between">
+    <nav className=" flex flex-row items-center">
         <button
-          className="bg-none text-tapeBlack border-none"
+          className="bg-none text-tapeWhite border-[1px] border-tapeWhite flex flex-row justify-center items-center rounded-full mr-[15px] w-[45px] h-[45px] hover:bg-tapeWhite hover:text-tapeDarkBlack "
           onClick={handleLogout}
           data-testid="logout-button"
         >
-          <FiLogOut size={20} />
+          <FiLogOut size={22} />
         </button>
 
         <Link to={"/user"}>
@@ -56,14 +43,11 @@ const AppNav = () => {
               src={user.profilePic}
               className="w-16 h-16 object-cover"
               style={{ objectPosition: "center-center" }}
-
               data-testid="profile-image"
             />
           </div>
         </Link>
 
-
-      </div>
     </nav>
   );
 };

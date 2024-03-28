@@ -5,14 +5,15 @@ import { useMainContext } from '../Context/Context';
 import { ChannelType } from '../../types/Channel';
 import { useDropzone } from 'react-dropzone';
 import { PiUploadSimple } from "react-icons/pi";
+import Loading from '../Loading/Loading';
 
 type AddMixtapeFormProps = {
   channelId: string;
-  channel: ChannelType;
-  setChannel: Dispatch<SetStateAction<ChannelType>>;
+  selectedChannel: ChannelType | null;
+  setSelectedChannel: Dispatch<SetStateAction<ChannelType | null>>;
 };
 
-const AddMixtapeForm = ({ channelId, channel, setChannel, }: AddMixtapeFormProps) => {
+const AddMixtapeForm = ({ channelId, selectedChannel, setSelectedChannel, }: AddMixtapeFormProps) => {
   const { user } = useMainContext();
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -127,10 +128,10 @@ const AddMixtapeForm = ({ channelId, channel, setChannel, }: AddMixtapeFormProps
       const newMixTape = await createMixTape(newMixtapeData);
       console.log(`newmixtape : ${newMixTape.name}`)
       const updatedChannel = {
-        ...channel,
-        mixTapes: [...channel.mixTapes, newMixTape],
+        ...selectedChannel!,
+        mixTapes: [...selectedChannel!.mixTapes, newMixTape],
       };
-      setChannel(updatedChannel);
+      setSelectedChannel(updatedChannel);
 
     } catch (error) {
       console.error(error);
@@ -139,16 +140,15 @@ const AddMixtapeForm = ({ channelId, channel, setChannel, }: AddMixtapeFormProps
 
   return (
     <form
-      className="inset-y-1/4 inset-x-1/3 z-50 text-tapeWhite flex flex-col w-72 gap-5 m-8 border-dashed border-tapeDarkGrey bg-tapeBlack border-[2px] rounded-[20px] w-[900px] h-[300px] p-[20px]"
+      className=" text-tapeWhite flex flex-col w-full gap-5 border-dashed border-tapeDarkGrey bg-tapeBlack border-[2px] rounded-[20px] h-[300px] p-[20px]"
     >
       <div {...getRootProps()} className='flex flex-col items-center' >
         <div>
           <div>
-            <PiUploadSimple size={120} className='text-tapeDarkGrey m-5' />
+          {uploading ? <Loading/> :<PiUploadSimple size={120} className='text-tapeDarkGrey m-5'/> }
           </div>
         </div>
-        {uploading? <p>UPLOAD IN PROGRESS</p> : <></>}
-        <p>Or</p>
+        {uploading? <></> :  <p>Or</p> }
         <button type='button' className='rounded-full border-[2px] border-tapeDarkGrey w-[150px] p-[5px] m-8' onClick={handleChooseFilesClick} disabled={uploading}>Choose files</button>
       </div>
       <input name="file" type="file" onChange={handleFileSelect} className='hidden' ref={fileInputRef} disabled={uploading} accept=".aac, .mp3, .mpga, .m4a, .ogg, .oga, .wav, .weba, .flac"></input>

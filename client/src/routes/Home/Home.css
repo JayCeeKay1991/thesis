@@ -30,7 +30,7 @@
     overflow: hidden;
     position: relative;
     border-radius: 20px;
-    border:3px solid #BBF771;
+    border:3px solid #FF93CD;
     left: 100px;
 }
 
@@ -49,7 +49,7 @@
     overflow: hidden;
     position: absolute;
     border-radius: 20px;
-    border:3px solid #FF65AA;
+    border:3px solid #FED837;
     right: 200px;
     top: 100px;
 }
@@ -62,4 +62,61 @@
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+#img-crop11 {
+    width:150px;
+    height:150px;
+    overflow: hidden;
+    position: absolute;
+    border-radius: 20px;
+    border:3px solid #FF93CD;
+    left: 160px;
+    top: 90px;
+}
+
+#img11 {
+    width: 100%;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+#img-crop22 {
+    width: 150px;
+    height:150px;
+    overflow: hidden;
+    position: absolute;
+    border-radius: 20px;
+    border:3px solid #FED837;
+    right: 200px;
+    top: 230px;
+    right:410px;
+}
+
+#img22 {
+    width: 100%;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+
+#wrapper {
+    background-color: hsla(48, 99%, 61%, 1);
+        background-image:
+            radial-gradient(at 11% 87%, hsla(48, 99%, 61%, 1) 0px, transparent 50%),
+            radial-gradient(at 58% 13%, hsla(328, 100%, 79%, 1) 0px, transparent 50%),
+            radial-gradient(at 0% 50%, hsla(48, 99%, 61%, 1) 0px, transparent 50%),
+            radial-gradient(at 26% 98%, hsla(340, 100%, 76%, 1) 0px, transparent 50%),
+            radial-gradient(at 0% 70%, hsla(48, 99%, 61%, 1) 0px, transparent 50%),
+            radial-gradient(at 67% 33%, hsla(328, 100%, 79%, 1) 0px, transparent 50%),
+            radial-gradient(at 6% 5%, hsla(48, 99%, 61%, 1) 0px, transparent 50%);
+    background-size: cover;
+    background-repeat: no-repeat;
 }

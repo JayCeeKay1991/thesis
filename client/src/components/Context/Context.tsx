@@ -11,24 +11,19 @@ import {
 import { User } from '@/types/User';
 import { ChannelType } from '@/types/Channel';
 import { MixTape } from '@/types/MixTape';
-import { getUserById } from '@/services/UserClientService';
+import { getProfile, getUserById } from '@/services/UserClientService';
 import { useNavigate } from 'react-router-dom';
+import { getChannelsUserMemberOf } from '@/services/ChannelClientService';
 
 type MainContext = {
   user: User;
   channels: ChannelType[];
+  friendsChannels: ChannelType[];
   mixTapes: MixTape[];
-  currentStreamUrls: string[];
-  streamIndex: number;
-  playing: boolean;
-  currentPlaybackTime: number;
   setUser: Dispatch<SetStateAction<User>>;
   setChannels: Dispatch<SetStateAction<ChannelType[]>>;
   setMixTapes: Dispatch<SetStateAction<MixTape[]>>;
-  setCurrentStreamUrls: Dispatch<SetStateAction<string[]>>;
-  setStreamIndex: Dispatch<SetStateAction<number>>;
-  setPlaying: Dispatch<SetStateAction<boolean>>;
-  setCurrentPlaybackTime: Dispatch<SetStateAction<number>>;
+  setFriendsChannels: Dispatch<SetStateAction<ChannelType[]>>;
 };
 
 export const initialStateUser = {
@@ -43,46 +38,43 @@ export const initialStateUser = {
 
 const initialContext = {
   user: initialStateUser,
-  currentStreamUrls: [],
-  playing: false,
-  streamIndex: 0,
-  currentPlaybackTime: 0,
   channels: [],
+  friendsChannels: [],
   mixTapes: [],
   setUser: () => {},
   setChannels: () => {},
   setMixTapes: () => {},
-  setCurrentStreamUrls: () => {},
-  setPlaying: () => false,
-  setStreamIndex: () => 0,
-  setCurrentPlaybackTime: () => 0
+  setFriendsChannels: () => {}
 };
 
 const MainContext = createContext<MainContext>(initialContext);
 
 export default function ContextProvider({ children }: PropsWithChildren) {
-
   const navigate = useNavigate();
   const [user, setUser] = useState<User>(initialStateUser);
   const [channels, setChannels] = useState<ChannelType[]>([]);
   const [mixTapes, setMixTapes] = useState<MixTape[]>([]);
-  const [currentStreamUrls, setCurrentStreamUrls] = useState<string[]>([]);
-  const [streamIndex, setStreamIndex] = useState<number>(0);
-  const [playing, setPlaying] = useState<boolean>(false);
-  const [currentPlaybackTime, setCurrentPlaybackTime] = useState<number>(0);
-
-
+  const [friendsChannels, setFriendsChannels] = useState<ChannelType[]>([])
 
   useEffect(() => {
+
+    // get channels that user is member of
+    async function getFriendsChannels (userId: string) {
+      const channelsUserIn = await getChannelsUserMemberOf(userId);
+      setFriendsChannels(channelsUserIn)
+    }
     const fetchUser = async () => {
       try {
-        const userId = localStorage.getItem('loggedinUser');
-        if (userId) {
-          const foundUser = await getUserById(userId);
+        // get user profile if there is a session
+        const userProfile = await getProfile();
+        if (userProfile) {
+          // if there is a profile in the session, get user by id, here we use get user by id, because it populates the user
+          const foundUser = await getUserById(userProfile._id);
           if (foundUser) {
             setUser(foundUser);
             setChannels(foundUser.channels);
             setMixTapes(foundUser.mixTapes);
+            getFriendsChannels(userProfile._id)
           }
         } else {
           navigate('/home');
@@ -98,20 +90,15 @@ export default function ContextProvider({ children }: PropsWithChildren) {
     <MainContext.Provider
       value={{
         user,
-        currentStreamUrls,
         setUser,
         channels,
+        friendsChannels,
         setChannels,
         mixTapes,
         setMixTapes,
-        setCurrentStreamUrls,
-        streamIndex,
-        setStreamIndex,
-        playing,
-        setPlaying,
-        currentPlaybackTime,
-        setCurrentPlaybackTime
-      }}>
+        setFriendsChannels
+      }}
+    >
       {children}
     </MainContext.Provider>
   );

@@ -17,7 +17,10 @@ function CommentList({ channel }: propsType) {
 
   // Set and sort comments
   useEffect(() => {
-    setComments(channel.comments);
+     const sortedComments = [...channel.comments].sort((a, b) =>
+       b.date?.toString()?.localeCompare(a.date?.toString())
+     );
+     setComments(sortedComments);
   }, [channel]);
 
   // Handle comments form change
@@ -53,59 +56,56 @@ function CommentList({ channel }: propsType) {
   };
 
   return (
-    <div className="flex flex-col items-center w-full">
-      <div
-        id="comments-top"
-        className="w-full flex flex-row justify-between items-end mb-[80px] pr-[60px] pl-[50px]"
-      >
-        <div className="w-[400px]">
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-row justify-between items-center"
-          >
-            <input
-              value={formValue}
-              onChange={handleChange}
-              placeholder="Leave a comment"
-              className="bg-tapeBlack h-[60px] mr-[10px] text-tapeWhite border-none text-[20px] font-medium outline-none border-b-4 placeholder-tapeDarkGrey"
-            ></input>
-            <button
-              type="submit"
-              className=" border-none text-tapeBlack text-[20px] text-semibold rounded-[20px]"
-            >
-              <FiSend className="text-tapeDarkGrey" size={25} />
-            </button>
-          </form>
-          <hr className="border-tapeDarkGrey"></hr>
-        </div>
-
-        <form className="w-[200px]">
-          <select
-            id="underline_select"
-            className=" w-full block px-0 text-[20px] text-tapeDarkGrey font-medium bg-tapeBlack border-0 border-b-[1px] border-tapeDarkGrey appearance-none dark:text-tapeDarkGrey dark:border-tapeGrey focus:outline-none focus:ring-0 focus:border-tapeGrey peer"
-            defaultValue="latest"
-            onChange={sortComments}
-          >
-            <option value="latest">Latest</option>
-            <option value="oldest">Oldest</option>
-          </select>
-        </form>
-      </div>
-
+    <div className="flex flex-col items-center w-full border-[px] rounded-[20px] p-[15px] mb-[30px] bg-tapeBlack relative">
       {comments.length > 0 ? (
-        <div id="comments list" className="flex flex-col items-center">
-          <div className="w-full mb-[20px]">
-            <p className="text-tapeDarkGrey text-[20px]">
-              {comments.length} Comments
-            </p>
+        <div
+          id="comments list"
+          className="w-full flex flex-col items-center relative"
+        >
+          <div className="w-full flex flex-row">
+            <div className="w-full mb-[10px]">
+              <p className="text-tapeDarkGrey text-[12px] font-medium">
+                {comments.length} Comments
+              </p>
+            </div>
+
+            <form className="w-[80px]">
+              <select
+                id="underline_select"
+                className=" w-full block px-0 text-[12px] text-tapeDarkGrey font-medium bg-tapeBlack border-tapeDarkGrey appearance-none dark:text-tapeDarkGrey dark:border-tapeGrey focus:outline-none focus:ring-0 focus:border-tapeGrey peer"
+                defaultValue="latest"
+                onChange={sortComments}
+              >
+                <option value="latest">Latest</option>
+                <option value="oldest">Oldest</option>
+              </select>
+            </form>
           </div>
+
           {comments.map((comment, index) => (
             <Comment key={index} comment={comment} />
           ))}
         </div>
       ) : (
-        <p className="text-[40px] text-tapeDarkGrey">No comments yet</p>
+        <p className="text-[20px] mb-[10px] text-tapeDarkGrey">No comments yet</p>
       )}
+
+      <form
+        onSubmit={handleSubmit}
+        className="w-full flex flex-row mt-auto items-center pl-[6px] pr-[6px] pb-[6px] pt-[5px] rounded-b-[17px]"
+      >
+        <input
+          value={formValue}
+          onChange={handleChange}
+          className="bg-tapeBlack w-full  h-[40px] align-top leading-[0px] pl-[20px] text-tapeBlack border-[2px] border-tapeDarkGrey text-[12px] font-medium outline-none placeholder-tapeDarkGrey rounded-full"
+        ></input>
+        <button
+          type="submit"
+          className="w-[40px] h-[40px] flex-none flex flex-row justify-center items-center border-none text-tapeBlack text-[20px] text-semibold rounded-[60px]"
+        >
+          <FiSend className="text-tapeDarkGrey" size={20} />
+        </button>
+      </form>
     </div>
   );
 }

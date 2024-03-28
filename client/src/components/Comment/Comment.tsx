@@ -8,10 +8,10 @@ type propsType = {
 function Comment({ comment }: propsType) {
 
   return (
-    <div className="bg-tapeBlack w-[700px] h-[120px] flex flex-row pl-[20px] rounded-[20px] p-[10px] mb-[50px] items-center border-tapeDarkGrey border-[1px]">
+    <div className="w-full flex flex-row rounded-[20px] p-[10px] mb-[10px] items-center border-tapeOffBlack border-[0px]">
       <div
-        id="comment-crop"
-        className="w-[80px] h-[80px] overflow-hidden rounded-full mr-[40px] flex items-center justify-center"
+        id="img-crop"
+        className="w-[60px] h-[60px] overflow-hidden rounded-full mr-[20px] flex items-center justify-center flex-none"
       >
         <img
           src={comment.owner?.profilePic}
@@ -19,22 +19,19 @@ function Comment({ comment }: propsType) {
           alt="get a profile pic you dummy"
         />
       </div>
-      <div className="flex flex-col leading-[30px] justify-start items-start">
-        <div className=" flex flex-row">
+      <div className="flex flex-col leading-[20px] justify-start items-start">
+        <div className="flex flex-row">
           <p
-            className="bg-tape font-semibold text-[25px] mr-[20px]"
+            className="bg-tape text-[12px] mr-[20px]"
             data-testid="comment-author"
           >
             {comment.owner?.userName || "Unknown User"}
           </p>
-          <p className="font-medium text-[20px] text-tapeDarkGrey">
+          <p className="font-medium text-[10px] text-tapeDarkGrey">
             {TimePrettier(comment.date)}
           </p>
         </div>
-        <p
-          className="text-[25px] whitespace-nowrap"
-          data-testid="comment-content"
-        >
+        <p className="text-[12px] w-full text-wrap" data-testid="comment-content">
           {comment.message}
         </p>
       </div>

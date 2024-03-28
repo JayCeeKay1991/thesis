@@ -1,6 +1,7 @@
 import { InferSchemaType } from 'mongoose';
 import mongoose from '.';
 import { Document } from 'mongoose';
+import MixTapeModel from './mixTape';
 
 type ChannelDocument = Document<unknown, {}, ChannelType> & ChannelType;
 
@@ -36,11 +37,18 @@ const Channel = new mongoose.Schema({
   notifications: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Notifications",
+      ref: 'Notifications',
     },
   ],
 });
 
+const deleteAllMixTapes = async (doc: ChannelDocument) => {
+  doc.mixTapes.forEach(async (mixTape) => {
+    await MixTapeModel.findByIdAndDelete(mixTape);
+  });
+};
+
+Channel.post('findOneAndDelete', deleteAllMixTapes);
 
 const ChannelModel = mongoose.model('Channel', Channel);
 

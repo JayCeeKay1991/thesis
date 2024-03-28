@@ -1,8 +1,8 @@
-import express from 'express';
-import supertest from 'supertest';
-import mongoose from 'mongoose';
-import router from '../../router';
-import ChannelModel from '../../models/channel';
+import express from "express";
+import supertest from "supertest";
+import mongoose from "mongoose";
+import router from "../../router";
+import ChannelModel from "../../models/channel";
 
 import {
   describe,
@@ -11,24 +11,24 @@ import {
   afterAll,
   expect,
   beforeAll,
-} from '@jest/globals';
-import UserModel from '../../models/user';
+} from "@jest/globals";
+import UserModel from "../../models/user";
 
 const mockUser = {
-  userName: 'mock',
-  email: 'test@example.com',
-  password: '123',
-  profilePic: '',
+  userName: "mock",
+  email: "test@example.com",
+  password: "123",
+  profilePic: "",
 };
 
 const mockUser3 = {
-  userName: 'mock3',
-  email: 'test3@example.com',
-  password: '123',
-  profilePic: '',
+  userName: "mock3",
+  email: "test3@example.com",
+  password: "123",
+  profilePic: "",
 };
 
-describe('Channel Controller', () => {
+describe("Channel Controller", () => {
   const app = express();
   app.use(express.json());
   app.use(router);
@@ -48,21 +48,21 @@ describe('Channel Controller', () => {
     await mongoose.connection.close();
   });
 
-  it('Should retrieve on channel', async () => {});
+  it("Should retrieve on channel", async () => {});
 
-  it('Should add a user to a channel', async () => {
-    await request.post('/users').send(mockUser);
+  it("Should add a user to a channel", async () => {
+    await request.post("/users").send(mockUser);
     const testUser = await UserModel.findOne({ email: mockUser.email });
 
     const newMockChannel = new ChannelModel({
-      name: 'NewMockChannel',
-      picture: '',
+      name: "NewMockChannel",
+      picture: "",
       owner: testUser,
       members: [],
       mixTapes: [],
     });
 
-    await request.post('/channels').send(newMockChannel);
+    await request.post("/channels").send(newMockChannel);
     const testChannel = await ChannelModel.findOne({
       name: newMockChannel.name,
     });

@@ -1,6 +1,3 @@
-/// <reference types="vitest"/>
-/// <reference types="vite/client" />
-
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, userEvent } from '../../test/testConfig';
 import UserDetails from './UserDetails';
@@ -11,7 +8,7 @@ vi.mock('../Context/Context', () => ({
   useMainContext: () => ({
     user: {
       _id: '123',
-      userName: 'JohnDoe',
+      userName: 'theDow',
       email: 'john@example.com',
       profilePic: '',
       channels: [],
@@ -23,9 +20,8 @@ vi.mock('../Context/Context', () => ({
 
 vi.mock('../../services/UserClientService', () => ({
   updateUser: vi.fn().mockResolvedValue({
-    // Mocked updated user object, adjust types as necessary
     _id: '123',
-    userName: 'JaneDoe',
+    userName: 'theName',
     email: 'jane@example.com',
     profilePic: '',
     channels: [],
@@ -38,22 +34,42 @@ describe('UserDetails component', () => {
     render(<UserDetails />);
   });
 
-  it('allows editing the username and submitting the form', async () => {
-    // Trigger edit mode for the username
-    const editUsernameButton = screen.getByTestId('edit-username-button'); // Make sure your button has `data-testid="edit-username-button"`
+  it('allows editing the username', async () => {
+    // Find the edit button and click it to enable the username input
+    const editUsernameButton = screen.getByTestId('edit-username-button');
     await userEvent.click(editUsernameButton);
 
-    // Find the username input and update its value
-    const usernameInput = screen.getByRole('textbox', { name: /username/i }) as HTMLInputElement;
+    // Find the username input, clear it, and type a new username
+    const usernameInput = screen.getByTestId('username-input');
     await userEvent.clear(usernameInput);
     await userEvent.type(usernameInput, 'JaneDoe');
 
-    // Find and click the save button
-    const saveButton = screen.getByTestId('save-username-button'); // Make sure your save button has `data-testid="save-username-button"`
+    // Find the save button and click it to submit the form
+    const saveButton = screen.getAllByText('save')[0]; // Assuming 'save' is the text on the save button
     await userEvent.click(saveButton);
 
-    // Assertions to verify the behavior
-    expect(usernameInput.value).toBe('JaneDoe');
-    expect(vi.mocked(updateUser)).toHaveBeenCalledWith(expect.anything()); // Verify that updateUser was called with the expected parameters
-  });
+    // Verify that updateUser was called with the expected parameters
+    expect(updateUser).toHaveBeenCalledWith(expect.objectContaining({
+      userName: 'JaneDoe',
+    }));
+  }
+  );
+  it('allows editing the email', async () => {
+    const editEmailButton = screen.getByTestId('edit-email-button');
+    await userEvent.click(editEmailButton);
+
+    // Find the email input, clear it, and type a new email
+    const emailInput = screen.getByTestId('email-input');
+    await userEvent.clear(emailInput);
+    await userEvent.type(emailInput, 'JaneDoe@mock.com');
+
+    // Find the save button and click it to submit the form
+    const saveButton = screen.getAllByText('save')[0]; // Assuming 'save' is the text on the save button
+    await userEvent.click(saveButton);
+
+    // Verify that updateUser was called with the expected parameters
+    expect(updateUser).toHaveBeenCalledWith(expect.objectContaining({
+      email: 'JaneDoe@mock.com',
+    }));
+  })
 });

@@ -13,12 +13,12 @@ import { useMainContext } from '../Context/Context';
 import { HiPlus } from 'react-icons/hi2';
 
 interface AddMembersSelectProps {
-  channel: ChannelType;
-  setChannel: Dispatch<SetStateAction<ChannelType>>;
+  selectedChannel: ChannelType;
+  setSelectedChannel: Dispatch<SetStateAction<ChannelType | null>>;
   toggleMemberForm: () => void;
 }
 
-const AddMembersSelect = ({ channel, setChannel, toggleMemberForm }: AddMembersSelectProps) => {
+const AddMembersSelect = ({ selectedChannel, setSelectedChannel, toggleMemberForm }: AddMembersSelectProps) => {
   const [users, setUsers] = useState<User[]>([])
   const [matchedUsers, setMatchedUsers] = useState<User[]>([])
   const [searchQuery, setSearchQuery] = useState<string>('')
@@ -34,7 +34,7 @@ const AddMembersSelect = ({ channel, setChannel, toggleMemberForm }: AddMembersS
         const filteredUsers = allUsers.reduce((acc, curr) => {
           if (
             curr._id !== loggedInUser._id &&
-            !channel.members.map((member) => member._id).includes(curr._id)
+            !selectedChannel.members.map((member) => member._id).includes(curr._id)
           )
             acc.push(curr);
           return acc;
@@ -45,20 +45,25 @@ const AddMembersSelect = ({ channel, setChannel, toggleMemberForm }: AddMembersS
       }
     }
     retrieveAllUsers();
-
   }, []);
 
 
   const handleMemberSelect = async (userId: string) => {
-    setMatchedUsers([]);
-    const user = users.find((user) => user._id === userId);
-    if (user) {
-      // add new user to channel on back end
-      const id = channel._id;
-      const updatedChannel = await addUserToChannel(id, user._id);
-      setChannel(updatedChannel);
+    try {
+      setMatchedUsers([]);
+      const user = users.find((user) => user._id === userId);
+      if (user) {
+        // add new user to channel on back end
+        const id = selectedChannel._id;
+        const updatedChannel = await addUserToChannel(id, user._id);
+        
+        setSelectedChannel(updatedChannel);
+      }
+      toggleMemberForm();
+    } catch (error) {
+      console.error(error);
     }
-    toggleMemberForm();
+
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +84,7 @@ const AddMembersSelect = ({ channel, setChannel, toggleMemberForm }: AddMembersS
 
   return (
 
-    <div className="flex flex-col w-[400px] pb-[10px] rounded bg-tapeBlack pl-[20px] pr-[10px]">
+    <div className="flex flex-col w-[400px] z-50 pb-[10px] rounded bg-tapeBlack pl-[20px] pr-[10px] absolute">
 
       <input
         name="user-search"

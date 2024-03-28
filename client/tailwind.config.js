@@ -3,17 +3,20 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     colors: {
-      tapeYellow: "#BBF771",
-      tapePink: "#FF65AA",
+      tapeYellow: "#FED837",
+      tapePink: "#FF93CD",
+      tapeOrange: "#FC782E",
+      tapeRed: "#F02930",
+      tapeCream: "#F4E6E3",
       tapeBlack: "#151515",
-      tapeOffBlack: "#181818",
+      tapeOffBlack: "#1B1B1B",
       tapeWhite: "#FFFFFF",
       tapeGray: "#767676",
       tapeDarkGrey: "#909090",
-      tapeDarkBlack: "#0F0F0F",
+      tapeDarkBlack: "#0C0C0C",
     },
     fontFamily: {
-      sans: ["Darker Grotesque"],
+      sans: ["Archivo"],
     },
     extend: {
       gradient: {},
@@ -32,5 +35,18 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      const newUtilities = {
+        ".no-scrollbar::-webkit-scrollbar": {
+          display: "none",
+        },
+        ".no-scrollbar": {
+          "-ms-overflow-style": "none" /* IE and Edge */,
+          "scrollbar-width": "none" /* Firefox */,
+        },
+      };
+      addUtilities(newUtilities);
+    },
+  ],
 };

@@ -7,28 +7,31 @@ import Dash from './routes/Dash/Dash';
 import UserDetails from './components/UserDetails/UserDetails';
 import Channel from './routes/Channel/Channel';
 import './index.css';
-
-
+import ContextProvider from './components/Context/Context';
 
 const router = createBrowserRouter([
   {
-    path: "/home",
+    path: '/home',
     element: <Home />,
   },
   {
-    path: "/",
-    element: <App />,
+    path: '/',
+    element: (
+      <ContextProvider>
+        <App />
+      </ContextProvider>
+    ),
     children: [
       {
-        path: "/dash",
+        path: '/dash',
         element: <Dash />,
       },
       {
-        path: "/user",
+        path: '/user',
         element: <UserDetails />,
       },
       {
-        path: "/channels/:id",
+        path: '/channels/:id',
         element: <Channel />,
       },
     ],
@@ -37,8 +40,6 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-
-      <RouterProvider router={router}/>
-
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
